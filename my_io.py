@@ -1,3 +1,6 @@
+"""some io stuff and data format converter
+
+"""
 import logging
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
@@ -7,11 +10,35 @@ import datetime
 import os
 import csv
 
+
+
+""" python debugger
+    import pdb
+    pdb.set_trace()
+
+"""
 def startLog(loggerName):
     """useage:
         from my_io import startLog
         startLog(__name__)
         log.info('msg %d %s', int, str)
+        logger.debug('%s iteration, item=%s', i, item)
+
+        user = db.read_user(user_id)
+        if user is None:
+        logger.error('Cannot find user with user_id=%s', user_id)
+
+        try:
+            open('/path/to/does/not/exist', 'rb')
+        except (SystemExit, KeyboardInterrupt):
+            raise
+        except Exception, e:
+            logger.error('Failed to open file', exc_info=True)
+
+        seek to 
+        http://victorlin.me/posts/2012/08/26/good-logging-practice-in-python
+        if you want to use yaml or jason config file format
+
     """
     # get logFile from confiure.ini
     config = ConfigParser.ConfigParser()
@@ -81,16 +108,84 @@ def setUp(path):
 
 # the data read from csv file is in string fornumpy.mat
 # therefore we need transform them into Int
-def toInt(array):
-    array = np.mat(array)
-    m,n = np.shape(array)
+def toFloat(oldArray):
+    startLog(__name__)
+    logger = logging.getLogger(__name__)
+    logger.info('check type of array: %s',type(oldArray))
+    # initialize
+    newArray = oldArray
+
+    if len(np.shape(oldArray)) == 1:
+        logger.info('1d array')
+        if not isinstance(oldArray[0], float):
+            logger.debug('array not float, converting..')
+            newArray = np.array(oldArray, dtype='f8')
+    elif len(np.shape(oldArray)) == 2:
+        logger.info('2d array')
+        if not isinstance(oldArray[0][0], float):
+            logger.debug('array not float, converting..')
+            newArray = np.array(oldArray, dtype='f8')        
+    else:
+        logger.warning('array dimension more than 2, convert anyway')
+        newArray = np.array(oldArray, dtype='f8')   
+    
+    """array = np.mat(array)
+    
     newArray = np.zeros((m, n))
     for i in xrange(m):
         for j in xrange(n):
             newArray[i, j] = int(array[i,j])
-
+    """
+    logger.info('toFloat done')
     return newArray
 
+def getExtrme(oldArray):
+
+    startLog(__name__)
+    logger = logging.getLogger(__name__)
+    logger.info('maximum of probabiliy %d', np.amax(oldArray))
+    logger.info('minimum of probabiliy %d', np.amin(oldArray))
+
+# the data read from csv file is in string fornumpy.mat
+# therefore we need transform them into Int
+def toZeroOne(oldArray):
+    #import pdb
+    #pdb.set_trace()
+
+    startLog(__name__)
+    logger = logging.getLogger(__name__)
+    logger.info('check type of array: %s',type(oldArray))
+    if isinstance(oldArray, list):
+        logger.info('convert to  array')
+        oldArray = np.array(oldArray)
+
+    # initialize
+    # newArray = oldArray
+    if len(np.shape(oldArray)) == 1:
+        logger.info('1d array')
+        if not isinstance(oldArray[0], float):
+            logger.debug('array not float, converting to float first')
+            oldArray = toFloat(oldArray)
+        newArray = [1 if x > 0.5 else 0 for x in oldArray]
+    else:
+        logger.warning('array dimension more than 1'+
+                        'use the first col')
+        oldArray = oldArray[:,0]
+        if not isinstance(oldArray[0], float):
+            logger.debug('array not float, converting to float first')
+            oldArray = toFloat(oldArray)
+        newArray = [1 if x > 0.5 else 0 for x in oldArray]        
+        #newArray = np.array(oldArray, dypt='f8')   
+    getExtrme(oldArray)
+    """array = np.mat(array)
+    
+    newArray = np.zeros((m, n))
+    for i in xrange(m):
+        for j in xrange(n):
+            newArray[i, j] = int(array[i,j])
+    """
+    logger.info('toZeroOne done')
+    return newArray
 
 def readCsv():
     """this is to read the train.csv and test csv file
@@ -128,6 +223,7 @@ def readCsv():
             trainData.append(line) # 42001 * 685
     trainData.remove(trainData[0])
     trainData = np.array(trainData)
+    trainData = toFloat(trainData)
 
     testData = []
     with open(testFile) as file:
@@ -136,7 +232,7 @@ def readCsv():
             testData.append(line) # 42001 * 685
     testData.remove(testData[0])
     testData = np.array(testData)
-
+    testData = toFloat(testData)
     # load done
 
 
