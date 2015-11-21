@@ -143,8 +143,8 @@ def getExtrme(oldArray):
 
     startLog(__name__)
     logger = logging.getLogger(__name__)
-    logger.info('maximum of probabiliy %d', np.amax(oldArray))
-    logger.info('minimum of probabiliy %d', np.amin(oldArray))
+    logger.info('maximum of probabiliy %f', np.amax(oldArray))
+    logger.info('minimum of probabiliy %f', np.amin(oldArray))
 
 # the data read from csv file is in string fornumpy.mat
 # therefore we need transform them into Int
@@ -169,8 +169,8 @@ def toZeroOne(oldArray):
         newArray = [1 if x > 0.5 else 0 for x in oldArray]
     else:
         logger.warning('array dimension more than 1'+
-                        'use the first col')
-        oldArray = oldArray[:,0]
+                        'use the second col')
+        oldArray = oldArray[:,1]
         if not isinstance(oldArray[0], float):
             logger.debug('array not float, converting to float first')
             oldArray = toFloat(oldArray)

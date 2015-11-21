@@ -38,7 +38,7 @@ def splitData(X,y,portion,seed):
 	if rows_train < rows_train:
 		logger.warning('test set larger than training set')
 
-	logger.info('size of X_test is %d and X_train %d, #fts %d',rows_test,rows_test,cols_train)
+	logger.info('size of X_test is %d and X_train %d, #fts %d',rows_test,rows_train,cols_train)
 	return X_test, X_train, y_train, y_test
 
 

@@ -5,7 +5,7 @@ import classification_baseline
 from sklearn import svm
 import numpy as np
 from sklearn.metrics import classification
-
+from numpy import linalg as LA
 
 my_io.setUp('./biological_response/')
 
@@ -25,5 +25,8 @@ logger.info('start predict')
 predict_probs = svc.predict_proba(X_test)
 
 predict = my_io.toZeroOne(predict_probs)
-error = classification.zero_one_loss(y_test, predict)
-logger.info('error %d',error)
+# error = classification.zero_one_loss(y_test, predict)
+loss = np.subtract(predict,y_test)
+
+error = LA.norm(loss)
+logger.info('zero one loss %f',error)
