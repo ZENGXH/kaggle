@@ -83,7 +83,7 @@ def kmeans_update(X, Mu):
     logging.info('cal disortion measurement for each x,'
                  ' check dimension OK' if len(Ln) == n else 'error here')
     # Ln[n] = norm(X[:, n]-Mu[:, r(n)])
-    print Ln
+    # print Ln
     Ln_mean = np.mean(Ln)
     return Ln_mean, r, Mu
 
@@ -117,7 +117,7 @@ def normalize(originx):
             normalizedX[j,i] = np.divide(normalizedX[j,i], stdX[i])
     return normalizedX
 
-def kmeansClustering(X, k):
+def kmeansClustering(X, k, maxIters = 10):
     """
         X: data in shape N X D
         k: number of cluster
@@ -150,7 +150,7 @@ def kmeansClustering(X, k):
     logger.info('pass' if ((k, D) == np.array(mu_old)).all 
                 else logger.error('failed'))
 
-    maxIters = 10;
+    
     logger.info('maximum iteration: %s start iteration',
                 str(maxIters))
 
@@ -170,4 +170,5 @@ def kmeansClustering(X, k):
     colors = [colors_list[int(r[i])] for i in range(N)]
     # colors = 'r'
     ax.scatter(X[:,0], X[:,1], c=colors,alpha=0.8)
-    plt.show()
+    # plt.show()
+    return X, r

@@ -19,8 +19,9 @@ import csv
 """
 def startLog(loggerName):
     """useage:
-        from my_io import startLog
-        startLog(__name__)
+        import my_io 
+        my_io.startLog(__name__)
+        logger = logging.getLogger(__name__)
         log.info('msg %d %s', int, str)
         logger.debug('%s iteration, item=%s', i, item)
 
@@ -270,6 +271,8 @@ def write_delimited_file(file_path, data,header=None, delimiter=","):
         if isinstance(line, str):
             f_out.write(line + "\n")
         elif isinstance(line, int):
+            f_out.write(str(line) + "\n")
+        elif isinstance(line, float):
             f_out.write(str(line) + "\n")
         else:
             f_out.write(delimiter.join(line) + "\n")
